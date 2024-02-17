@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "574871139988",
+    "project_id": "tracking-poc-6da0e",
+    "storage_bucket": "tracking-poc-6da0e.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:574871139988:android:2f827044b1096e6c696681",
+        "android_client_info": {
+          "package_name": "me.abhishek.activitymonitoring"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDguqJO6RJVDq7r8DQXHK_jhb0xo5m-t6I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
