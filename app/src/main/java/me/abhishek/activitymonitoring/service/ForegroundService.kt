@@ -13,6 +13,7 @@ import androidx.core.app.NotificationCompat
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 import me.abhishek.activitymonitoring.R
+import me.abhishek.activitymonitoring.battery.BatteryMonitoring
 import me.abhishek.activitymonitoring.sensors.SensorsMonitoring
 import me.abhishek.activitymonitoring.usagestats.AppStatsMonitoring
 
@@ -52,9 +53,11 @@ class ForegroundService : Service() {
     override fun onCreate() {
         super.onCreate()
         Log.i(TAG, "service created")
+
+        // Sensors
         SensorsMonitoring(sensorManager, firestore)
 
-        // Check for proper permission before trying to access package stats
+        // Usage Stats
         if (checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS)
             == PackageManager.PERMISSION_GRANTED
         ) {
@@ -62,6 +65,9 @@ class ForegroundService : Service() {
         } else {
             Log.e(TAG, "permission missing for PACKAGE_USAGE_STATS")
         }
+
+        // Battery
+        BatteryMonitoring(this, firestore)
     }
 
     override fun onBind(intent: Intent?): IBinder? {

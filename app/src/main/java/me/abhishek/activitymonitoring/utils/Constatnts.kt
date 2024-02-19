@@ -13,4 +13,7 @@ object Constatnts {
     // Apps stats
     const val APPS_STATS_COLLECTION = "apps_stats"
     const val APPS_FOREGROUND_TIME = "apps_foregorund_time"
+
+    // Battery
+    const val BATTERY_COLLECTION = "battery"
 }
