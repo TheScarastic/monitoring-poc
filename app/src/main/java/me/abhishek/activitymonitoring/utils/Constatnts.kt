@@ -9,4 +9,8 @@ object Constatnts {
     const val MAGNETIC_FIELD = "magnetic_field"
     const val ORIENTATION = "orientation"
     const val PROXIMITY = "proximity"
+
+    // Apps stats
+    const val APPS_STATS_COLLECTION = "apps_stats"
+    const val APPS_FOREGROUND_TIME = "apps_foregorund_time"
 }

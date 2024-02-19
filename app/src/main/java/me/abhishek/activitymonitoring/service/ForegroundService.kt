@@ -1,7 +1,11 @@
 package me.abhishek.activitymonitoring.service
 
 import android.app.Service
+import android.app.usage.UsageStatsManager
 import android.content.Intent
+
+import android.content.pm.PackageManager
+
 import android.hardware.SensorManager
 import android.os.IBinder
 import android.util.Log
@@ -10,6 +14,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 import me.abhishek.activitymonitoring.R
 import me.abhishek.activitymonitoring.sensors.SensorsMonitoring
+import me.abhishek.activitymonitoring.usagestats.AppStatsMonitoring
+
 import javax.inject.Inject
 
 /**
@@ -22,6 +28,10 @@ class ForegroundService : Service() {
 
     @Inject
     lateinit var sensorManager: SensorManager
+
+    @Inject
+    lateinit var usageStatsManager: UsageStatsManager
+
     @Inject
     lateinit var firestore: FirebaseFirestore
 
@@ -43,6 +53,15 @@ class ForegroundService : Service() {
         super.onCreate()
         Log.i(TAG, "service created")
         SensorsMonitoring(sensorManager, firestore)
+
+        // Check for proper permission before trying to access package stats
+        if (checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS)
+            == PackageManager.PERMISSION_GRANTED
+        ) {
+            AppStatsMonitoring(usageStatsManager, this, firestore)
+        } else {
+            Log.e(TAG, "permission missing for PACKAGE_USAGE_STATS")
+        }
     }
 
     override fun onBind(intent: Intent?): IBinder? {
