@@ -5,12 +5,14 @@ import android.content.Context
 import android.location.Location
 import android.location.LocationManager
 import android.os.Build
+import android.provider.Settings
 import android.util.Log
 import androidx.core.location.LocationListenerCompat
 import androidx.core.location.LocationManagerCompat
 import androidx.core.location.LocationRequestCompat
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import me.abhishek.activitymonitoring.service.ForegroundService.Companion.UNIQUE_ID
 import me.abhishek.activitymonitoring.utils.Constatnts
 
 @SuppressLint("MissingPermission")
@@ -78,7 +80,8 @@ class LocationMonitoring(
             oldLocations[provider] = locationModel
             // Update to firestore
             val locationData = hashMapOf(location.time.toString() to locationModel)
-            firestore.collection(Constatnts.LOCATION_COLLECTION)
+            firestore.collection(UNIQUE_ID).document(Constatnts.MONITORING_DOCUMENT)
+                .collection(Constatnts.LOCATION_COLLECTION)
                 .document(location.provider!!)
                 .set(locationData, SetOptions.merge())
                 .addOnFailureListener {

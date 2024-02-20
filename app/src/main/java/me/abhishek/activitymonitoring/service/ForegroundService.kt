@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.hardware.SensorManager
 import android.location.LocationManager
 import android.os.IBinder
+import android.provider.Settings
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.firestore.FirebaseFirestore
@@ -65,6 +66,8 @@ class ForegroundService : Service() {
         super.onCreate()
         Log.i(TAG, "service created, location")
 
+        UNIQUE_ID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
+
         // Sensors
         SensorsMonitoring(sensorManager, firestore)
 
@@ -72,7 +75,7 @@ class ForegroundService : Service() {
         if (checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS)
             == PackageManager.PERMISSION_GRANTED
         ) {
-            AppStatsMonitoring(usageStatsManager, this, firestore)
+            AppStatsMonitoring(this, usageStatsManager, firestore)
         } else {
             Log.e(TAG, "permission missing for PACKAGE_USAGE_STATS")
         }
@@ -88,5 +91,6 @@ class ForegroundService : Service() {
     companion object {
         const val NOTIFICATION_ID = 99
         const val TAG = "ForegroundService"
+        lateinit var UNIQUE_ID: String
     }
 }

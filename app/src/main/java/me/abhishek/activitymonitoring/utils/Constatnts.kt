@@ -1,6 +1,9 @@
 package me.abhishek.activitymonitoring.utils
 
 object Constatnts {
+    // Monitoring
+    const val MONITORING_DOCUMENT = "monitoring"
+
     // Sensors
     const val SENSORS_COLLECTION = "sensors"
     const val ACCELEROMETER = "accelerometer"
