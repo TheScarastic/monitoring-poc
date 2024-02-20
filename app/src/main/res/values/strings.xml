@@ -9,4 +9,6 @@
     <string name="dialog_location_summary">Location permission is required to track your movements,It helps the parents to keep track their children, location is fetched and transmitted and handled securely without putting your or children\'s privacy at risk</string>
     <string name="grant_location_permission">Grant</string>
     <string name="deny_location_permisiion">Deny</string>
+
+    <string name="service_toast">Monitoring service started, Location: %b</string>
 </resources>

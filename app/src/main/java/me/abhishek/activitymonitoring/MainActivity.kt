@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -65,7 +66,11 @@ class MainActivity : AppCompatActivity() {
             putExtra(Constatnts.LOCATION_EXTRA, startLocation)
         }
         startForegroundService(intent)
-
+        Toast.makeText(
+            this, getString(R.string.service_toast, startLocation),
+            Toast.LENGTH_SHORT
+        ).show()
+        finish()
     }
 
     override fun onRequestPermissionsResult(
