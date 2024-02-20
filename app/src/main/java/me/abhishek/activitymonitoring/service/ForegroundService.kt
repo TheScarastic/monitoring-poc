@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 
 import android.hardware.SensorManager
+import android.location.LocationManager
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -14,8 +15,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
 import me.abhishek.activitymonitoring.R
 import me.abhishek.activitymonitoring.battery.BatteryMonitoring
+import me.abhishek.activitymonitoring.location.LocationMonitoring
 import me.abhishek.activitymonitoring.sensors.SensorsMonitoring
 import me.abhishek.activitymonitoring.usagestats.AppStatsMonitoring
+import me.abhishek.activitymonitoring.utils.Constatnts
 
 import javax.inject.Inject
 
@@ -34,6 +37,9 @@ class ForegroundService : Service() {
     lateinit var usageStatsManager: UsageStatsManager
 
     @Inject
+    lateinit var locationManager: LocationManager
+
+    @Inject
     lateinit var firestore: FirebaseFirestore
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -46,13 +52,18 @@ class ForegroundService : Service() {
         // Start the service in the foreground
         startForeground(NOTIFICATION_ID, notification)
 
-        return START_NOT_STICKY
+        // Location Monitoring
+        if (intent != null && intent.getBooleanExtra(Constatnts.LOCATION_EXTRA, false)) {
+            LocationMonitoring(this, locationManager, firestore)
+        }
+
+        return START_REDELIVER_INTENT
     }
 
 
     override fun onCreate() {
         super.onCreate()
-        Log.i(TAG, "service created")
+        Log.i(TAG, "service created, location")
 
         // Sensors
         SensorsMonitoring(sensorManager, firestore)

@@ -4,4 +4,9 @@
     <string name="foreground_service">Foreground Service</string>
     <string name="channel_id">foreground</string>
     <string name="channel_name">Monitoring Service</string>
+
+    <string name="dialog_location_title">Location Permission</string>
+    <string name="dialog_location_summary">Location permission is required to track your movements,It helps the parents to keep track their children, location is fetched and transmitted and handled securely without putting your or children\'s privacy at risk</string>
+    <string name="grant_location_permission">Grant</string>
+    <string name="deny_location_permisiion">Deny</string>
 </resources>
