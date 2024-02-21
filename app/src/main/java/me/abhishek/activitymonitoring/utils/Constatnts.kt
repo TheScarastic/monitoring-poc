@@ -1,6 +1,9 @@
 package me.abhishek.activitymonitoring.utils
 
 object Constatnts {
+    // Device IDs
+    const val DEVICE_ID_DOCUMENT = "device_ids"
+
     // Monitoring
     const val MONITORING_DOCUMENT = "monitoring"
 

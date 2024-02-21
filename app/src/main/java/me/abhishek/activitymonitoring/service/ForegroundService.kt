@@ -9,12 +9,14 @@ import android.content.pm.PackageManager
 import android.hardware.SensorManager
 import android.location.LocationManager
 import android.net.ConnectivityManager
+import android.os.Build
 import android.os.IBinder
 import android.provider.Settings
 import android.telephony.SubscriptionManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import dagger.hilt.android.AndroidEntryPoint
 import me.abhishek.activitymonitoring.R
 import me.abhishek.activitymonitoring.battery.BatteryMonitoring
@@ -77,6 +79,8 @@ class ForegroundService : Service() {
 
         UNIQUE_ID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
 
+        addDeviceToFirestore()
+
         // Sensors
         SensorsMonitoring(sensorManager, firestore)
 
@@ -98,6 +102,12 @@ class ForegroundService : Service() {
 
     override fun onBind(intent: Intent?): IBinder? {
         return null
+    }
+
+    private fun addDeviceToFirestore() {
+        val deviceName = Build.MODEL
+        firestore.collection(Constatnts.DEVICE_ID_DOCUMENT).document(Constatnts.DEVICE_ID_DOCUMENT)
+            .set(hashMapOf(UNIQUE_ID to deviceName), SetOptions.merge() )
     }
 
     companion object {
