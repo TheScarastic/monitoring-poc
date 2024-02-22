@@ -8,8 +8,10 @@ import android.content.pm.PackageManager
 
 import android.hardware.SensorManager
 import android.location.LocationManager
+import android.net.ConnectivityManager
 import android.os.IBinder
 import android.provider.Settings
+import android.telephony.SubscriptionManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.firestore.FirebaseFirestore
@@ -17,6 +19,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import me.abhishek.activitymonitoring.R
 import me.abhishek.activitymonitoring.battery.BatteryMonitoring
 import me.abhishek.activitymonitoring.location.LocationMonitoring
+import me.abhishek.activitymonitoring.network.NetworkMonitor
 import me.abhishek.activitymonitoring.sensors.SensorsMonitoring
 import me.abhishek.activitymonitoring.usagestats.AppStatsMonitoring
 import me.abhishek.activitymonitoring.utils.Constatnts
@@ -39,6 +42,12 @@ class ForegroundService : Service() {
 
     @Inject
     lateinit var locationManager: LocationManager
+
+    @Inject
+    lateinit var connectivityManager: ConnectivityManager
+
+    @Inject
+    lateinit var subscriptionManager: SubscriptionManager
 
     @Inject
     lateinit var firestore: FirebaseFirestore
@@ -82,6 +91,9 @@ class ForegroundService : Service() {
 
         // Battery
         BatteryMonitoring(this, firestore)
+
+        // Network
+        NetworkMonitor(this, connectivityManager,subscriptionManager, firestore)
     }
 
     override fun onBind(intent: Intent?): IBinder? {

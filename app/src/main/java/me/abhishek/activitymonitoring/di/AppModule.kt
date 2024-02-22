@@ -5,6 +5,9 @@ import android.app.usage.UsageStatsManager
 import android.content.Context
 import android.hardware.SensorManager
 import android.location.LocationManager
+import android.net.ConnectivityManager
+import android.telephony.SubscriptionManager
+import androidx.core.content.getSystemService
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import dagger.Module
@@ -33,6 +36,15 @@ class AppModule {
     fun provideLocationManager(@ApplicationContext context: Context): LocationManager =
         context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
+    @Singleton
+    @Provides
+    fun providesSubscriptionManager(@ApplicationContext context: Context): SubscriptionManager =
+        context.getSystemService(SubscriptionManager::class.java)
+
+    @Singleton
+    @Provides
+    fun providesConnectivityManager(@ApplicationContext context: Context): ConnectivityManager =
+        context.getSystemService(ConnectivityManager::class.java)
 
     @Singleton
     @Provides

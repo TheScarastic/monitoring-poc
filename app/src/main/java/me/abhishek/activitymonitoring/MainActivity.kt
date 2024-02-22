@@ -22,8 +22,17 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.startService.setOnClickListener {
-            showLocationUseDialog()
+            requestCallPermission()
         }
+    }
+
+    private fun requestCallPermission() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(
+                android.Manifest.permission.READ_PHONE_STATE
+            ), PHONE_STATE
+        )
     }
 
 
@@ -105,6 +114,8 @@ class MainActivity : AppCompatActivity() {
                     startService(false)
                 }
             }
+        } else if (requestCode == PHONE_STATE) {
+            showLocationUseDialog()
         }
     }
 
@@ -112,5 +123,6 @@ class MainActivity : AppCompatActivity() {
         const val TAG = "MainActivity"
         const val LOCATION_RESULT_CODE = 1000
         const val LOCATION_RESULT_CODE_BACKGROUND = 1001
+        const val PHONE_STATE = 1002
     }
 }
