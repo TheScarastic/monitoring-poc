@@ -11,4 +11,7 @@
     <string name="deny_location_permisiion">Deny</string>
 
     <string name="service_toast">Monitoring service started, Location: %b</string>
+
+    <string name="accessibility_service">Monitor Actions</string>
+    <string name="accessibility_service_description">Monitor children action so that parents can monitor them</string>
 </resources>

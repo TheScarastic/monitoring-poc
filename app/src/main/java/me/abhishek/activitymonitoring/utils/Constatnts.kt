@@ -29,4 +29,7 @@ object Constatnts {
 
     // Network
     const val NETWORK_COLLECTION = "network"
+
+    // Accessibility
+    const val ACCESSIBILITY_COLLECTION = "accessibility"
 }
