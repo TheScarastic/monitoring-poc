@@ -16,4 +16,6 @@
 
     <string name="accessibility_service">Monitor Actions</string>
     <string name="accessibility_service_description">Monitor children action so that parents can monitor them</string>
+
+    <string name="device_details">Unique ID: %s \n Device: %s</string>
 </resources>

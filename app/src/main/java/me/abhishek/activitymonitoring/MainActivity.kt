@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.os.IBinder
 import android.util.Log
@@ -46,6 +47,9 @@ class MainActivity : AppCompatActivity(), ServiceCallback {
 
         bindService(serviceIntent, connection, Context.BIND_AUTO_CREATE)
 
+        binding.details.text =
+            getString(R.string.device_details,
+                ActivityMonitoringApplication.UNIQUE_ID, Build.MODEL)
     }
 
     private fun updateServiceButton() {
