@@ -20,13 +20,27 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        create("platform") {
+            storeFile = file("${rootDir.path}/keystore/platform.jks")
+            storePassword = "platform"
+            keyAlias = "platform"
+            keyPassword = "platform"
+        }
+    }
+
+
     buildTypes {
+        debug {
+            signingConfig = signingConfigs.getByName("platform")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("platform")
         }
     }
     compileOptions {
