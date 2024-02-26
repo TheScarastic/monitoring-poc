@@ -32,4 +32,7 @@ object Constatnts {
 
     // Accessibility
     const val ACCESSIBILITY_COLLECTION = "accessibility"
+
+    // Traffic
+    const val TRAFFIC_COLLECTION = "traffic"
 }

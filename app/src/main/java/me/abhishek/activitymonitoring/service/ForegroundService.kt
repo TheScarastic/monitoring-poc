@@ -19,6 +19,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import dagger.hilt.android.AndroidEntryPoint
 import me.abhishek.activitymonitoring.R
+import me.abhishek.activitymonitoring.Traffic.TrafficMonitor
 import me.abhishek.activitymonitoring.battery.BatteryMonitoring
 import me.abhishek.activitymonitoring.location.LocationMonitoring
 import me.abhishek.activitymonitoring.network.NetworkMonitor
@@ -98,6 +99,9 @@ class ForegroundService : Service() {
 
         // Network
         NetworkMonitor(this, connectivityManager,subscriptionManager, firestore)
+
+        // Traffic
+        TrafficMonitor(this, firestore).start()
     }
 
     override fun onBind(intent: Intent?): IBinder? {
