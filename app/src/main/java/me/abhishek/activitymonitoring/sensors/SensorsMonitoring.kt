@@ -84,6 +84,10 @@ class SensorsMonitoring(
         }
     }
 
+    fun stopServices() {
+        sensorManager.unregisterListener(this)
+    }
+
     /**
      * Extension to register a sensor with normal delay
      */

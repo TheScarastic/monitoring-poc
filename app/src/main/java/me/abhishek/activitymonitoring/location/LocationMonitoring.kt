@@ -89,6 +89,10 @@ class LocationMonitoring(
         }
     }
 
+    fun stopServices() {
+        LocationManagerCompat.removeUpdates(locationManager, this)
+    }
+
     companion object {
         private const val TAG = "LocationMonitoring"
         private const val INTERVAL = 1 * 1000L // 1 second

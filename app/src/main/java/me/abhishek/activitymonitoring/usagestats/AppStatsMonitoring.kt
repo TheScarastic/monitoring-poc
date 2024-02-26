@@ -18,9 +18,10 @@ class AppStatsMonitoring(
 ) {
 
     private val handler: Handler = Handler(context.mainLooper)
+    private val statsRunnable: Runnable = Runnable { getUsageStats() }
 
     init {
-        handler.post { getUsageStats() }
+        handler.post { statsRunnable.run() }
     }
 
     private fun getUsageStats() {
@@ -63,7 +64,7 @@ class AppStatsMonitoring(
         }
 
         handler.postDelayed({
-            getUsageStats()
+            statsRunnable.run()
         }, DELAY_UPLOAD_INTERVAL_HR)
     }
 
@@ -71,13 +72,18 @@ class AppStatsMonitoring(
         val appsData = hashMapOf(
             usageStats.packageName to usageStats.totalTimeInForeground,
         )
-        firestore.collection(ActivityMonitoringApplication.UNIQUE_ID).document(Constatnts.MONITORING_DOCUMENT)
+        firestore.collection(ActivityMonitoringApplication.UNIQUE_ID)
+            .document(Constatnts.MONITORING_DOCUMENT)
             .collection(Constatnts.APPS_STATS_COLLECTION)
             .document(Constatnts.APPS_FOREGROUND_TIME)
             .set(appsData, SetOptions.merge())
             .addOnFailureListener {
                 Log.e(TAG, "Apps stats Data upload failed $it")
             }
+    }
+
+    fun stopServices() {
+        handler.removeCallbacks(statsRunnable)
     }
 
     companion object {

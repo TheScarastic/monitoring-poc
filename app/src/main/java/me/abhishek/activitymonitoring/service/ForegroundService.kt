@@ -59,6 +59,14 @@ class ForegroundService : Service() {
             serviceCallback?.serviceLifecycleUpdated()
         }
 
+    private var locationMonitoring: LocationMonitoring? = null
+    private var sensorsMonitoring: SensorsMonitoring? = null
+    private var appStatsMonitoring: AppStatsMonitoring? = null
+    private var batteryMonitoring: BatteryMonitoring? = null
+    private var networkMonitor: NetworkMonitor? = null
+    private var trafficMonitor: TrafficMonitor? = null
+
+
     inner class LocalBinder : Binder() {
         fun getService(): ForegroundService {
             return this@ForegroundService
@@ -79,29 +87,31 @@ class ForegroundService : Service() {
 
         // Location Monitoring
         if (intent != null && intent.getBooleanExtra(Constatnts.LOCATION_EXTRA, false)) {
-            LocationMonitoring(this, locationManager, firestore)
+            locationMonitoring = LocationMonitoring(this, locationManager, firestore)
         }
 
         // Sensors
-        SensorsMonitoring(sensorManager, firestore)
+        sensorsMonitoring = SensorsMonitoring(sensorManager, firestore)
 
         // Usage Stats
         if (checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS)
             == PackageManager.PERMISSION_GRANTED
         ) {
-            AppStatsMonitoring(this, usageStatsManager, firestore)
+            appStatsMonitoring = AppStatsMonitoring(this, usageStatsManager, firestore)
         } else {
             Log.e(TAG, "permission missing for PACKAGE_USAGE_STATS")
         }
 
         // Battery
-        BatteryMonitoring(this, firestore)
+        batteryMonitoring = BatteryMonitoring(this, firestore)
 
         // Network
-        NetworkMonitor(this, connectivityManager, subscriptionManager, firestore)
+        networkMonitor = NetworkMonitor(this, connectivityManager, subscriptionManager, firestore)
 
         // Traffic
-        TrafficMonitor(this, firestore).start()
+        trafficMonitor = TrafficMonitor(this, firestore).apply {
+            start()
+        }
 
         return START_REDELIVER_INTENT
     }
@@ -112,12 +122,16 @@ class ForegroundService : Service() {
 
     override fun stopService(name: Intent?): Boolean {
         isRunning = false
-        return super.stopService(name)
-    }
 
-    override fun onDestroy() {
-        isRunning = false
-        super.onDestroy()
+        // Stop services
+        locationMonitoring?.stopServices()
+        sensorsMonitoring?.stopServices()
+        appStatsMonitoring?.stopServices()
+        batteryMonitoring?.stopServices()
+        networkMonitor?.stopServices()
+        trafficMonitor?.stopServices()
+
+        return super.stopService(name)
     }
 
     fun updateCallback(callback: ServiceCallback) {

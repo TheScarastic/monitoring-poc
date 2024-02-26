@@ -115,6 +115,10 @@ class BatteryMonitoring(
         context.registerReceiver(this, intentFilter)
     }
 
+    fun stopServices() {
+        context.unregisterReceiver(this)
+    }
+
     companion object {
         const val TAG = "BatteryMonitoring"
     }

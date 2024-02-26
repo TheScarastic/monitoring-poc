@@ -2,6 +2,9 @@ package me.abhishek.activitymonitoring.traffic
 
 import android.content.Context
 import android.net.LocalServerSocket
+import android.system.ErrnoException
+import android.system.Os
+import android.system.OsConstants
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
@@ -26,22 +29,24 @@ class TrafficMonitor(
         try {
             // Accept client connections and perform socket operations here
             while (true) {
-                val socket = serverSocket.accept()
-                val reader = BufferedReader(InputStreamReader(socket.inputStream))
-                val line = reader.readLine()
-                val params = line.split(",").toTypedArray()
-                val domainName = params[0]
-                val packageName = getPackageNameFromUid(context, params[1].toInt())
-                addTrafficToFirestore (packageName, domainName)
+                if (serverSocket != null) {
+                    val socket = serverSocket!!.accept()
+                    val reader = BufferedReader(InputStreamReader(socket.inputStream))
+                    val line = reader.readLine()
+                    val params = line.split(",").toTypedArray()
+                    val domainName = params[0]
+                    val packageName = getPackageNameFromUid(context, params[1].toInt())
+                    addTrafficToFirestore(packageName, domainName)
+                }
             }
         } catch (e: IOException) {
             Log.e(TAG, "IOException $e")
         } finally {
-            serverSocket.close()
+            closeSocket()
         }
     }
 
-    fun getPackageNameFromUid(context: Context, uid: Int): String {
+    private fun getPackageNameFromUid(context: Context, uid: Int): String {
         val pm = context.packageManager
         val packageNames = pm.getPackagesForUid(uid)
         return if (!packageNames.isNullOrEmpty()) {
@@ -65,6 +70,31 @@ class TrafficMonitor(
             .addOnFailureListener {
                 Log.e(TAG, "Traffic Data upload failed $it")
             }
+    }
+
+    private fun closeSocket() {
+        // Known bug and workaround that LocalServerSocket::close is not working well
+        // https://issuetracker.google.com/issues/36945762
+        if (serverSocket != null) {
+            try {
+                Os.shutdown(serverSocket!!.fileDescriptor, OsConstants.SHUT_RDWR)
+                serverSocket!!.close()
+                serverSocket = null
+            } catch (e: ErrnoException) {
+                if (e.errno != OsConstants.EBADF) {
+                    Log.w(TAG, "Socket already closed")
+                } else {
+                    Log.e(TAG, "Exception: cannot close DNS port on stop ${context.packageName} !")
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Exception: cannot close DNS port on stop ${context.packageName} !")
+            }
+        }
+    }
+
+    fun stopServices() {
+        closeSocket()
+        interrupt()
     }
 
     companion object {

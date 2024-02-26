@@ -12,18 +12,37 @@ import android.net.wifi.WifiInfo
 import android.os.Build
 import android.telephony.SubscriptionManager
 import android.util.Log
-import androidx.annotation.RequiresApi
 import com.google.firebase.firestore.FirebaseFirestore
 import me.abhishek.activitymonitoring.ActivityMonitoringApplication
 import me.abhishek.activitymonitoring.utils.Constatnts
 
-@RequiresApi(Build.VERSION_CODES.S)
 class NetworkMonitor(
     private val context: Context,
-    connectivityManager: ConnectivityManager,
+    private val connectivityManager: ConnectivityManager,
     private val subscriptionManager: SubscriptionManager,
     private val firestore: FirebaseFirestore
-) : NetworkCallback(FLAG_INCLUDE_LOCATION_INFO) {
+) {
+
+
+    private val networkCallback = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        object : NetworkCallback(FLAG_INCLUDE_LOCATION_INFO) {
+            override fun onCapabilitiesChanged(
+                network: Network,
+                networkCapabilities: NetworkCapabilities
+            ) {
+                this@NetworkMonitor.onCapabilitiesChanged(network, networkCapabilities)
+            }
+        }
+    } else {
+        object : NetworkCallback() {
+            override fun onCapabilitiesChanged(
+                network: Network,
+                networkCapabilities: NetworkCapabilities
+            ) {
+                this@NetworkMonitor.onCapabilitiesChanged(network, networkCapabilities)
+            }
+        }
+    }
 
     init {
         val networkRequestBuilder = NetworkRequest.Builder()
@@ -41,11 +60,11 @@ class NetworkMonitor(
                     addTransportType(NetworkCapabilities.TRANSPORT_THREAD)
                 }
             }.build()
-        connectivityManager.registerNetworkCallback(networkRequestBuilder, this)
+        connectivityManager.registerNetworkCallback(networkRequestBuilder, networkCallback)
 
     }
 
-    override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
+    fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
 
         val transport = transportToString(networkCapabilities)
         val subscription =
@@ -128,13 +147,18 @@ class NetworkMonitor(
     }
 
     private fun addNetworkStatusToFirestore(networkModel: NetworkModel) {
-        firestore.collection(ActivityMonitoringApplication.UNIQUE_ID).document(Constatnts.MONITORING_DOCUMENT)
+        firestore.collection(ActivityMonitoringApplication.UNIQUE_ID)
+            .document(Constatnts.MONITORING_DOCUMENT)
             .collection(Constatnts.NETWORK_COLLECTION)
             .document(System.currentTimeMillis().toString())
             .set(networkModel)
             .addOnFailureListener {
                 Log.e(TAG, "Network Data upload failed $it")
             }
+    }
+
+    fun stopServices() {
+        connectivityManager.unregisterNetworkCallback(networkCallback)
     }
 
     companion object {
