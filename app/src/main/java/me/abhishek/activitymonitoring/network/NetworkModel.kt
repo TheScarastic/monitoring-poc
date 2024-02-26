@@ -1,7 +1,5 @@
 package me.abhishek.activitymonitoring.network
 
-import android.net.NetworkCapabilities
-
 data class NetworkModel(
     val transport: List<String>?,
     val linkUpBandwidthKbps: String,

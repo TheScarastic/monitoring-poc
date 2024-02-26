@@ -7,7 +7,7 @@ import android.content.IntentFilter
 import android.os.BatteryManager
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
-import me.abhishek.activitymonitoring.service.ForegroundService.Companion.UNIQUE_ID
+import me.abhishek.activitymonitoring.ActivityMonitoringApplication
 import me.abhishek.activitymonitoring.utils.Constatnts
 
 class BatteryMonitoring(
@@ -99,7 +99,7 @@ class BatteryMonitoring(
     }
 
     private fun addBatteryStatusToFirestore(batteryModel: BatteryModel) {
-        firestore.collection(UNIQUE_ID).document(Constatnts.MONITORING_DOCUMENT)
+        firestore.collection(ActivityMonitoringApplication.UNIQUE_ID).document(Constatnts.MONITORING_DOCUMENT)
             .collection(Constatnts.BATTERY_COLLECTION)
             .document(System.currentTimeMillis().toString())
             .set(batteryModel)

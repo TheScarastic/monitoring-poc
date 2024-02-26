@@ -7,7 +7,7 @@ import android.os.Handler
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import me.abhishek.activitymonitoring.service.ForegroundService.Companion.UNIQUE_ID
+import me.abhishek.activitymonitoring.ActivityMonitoringApplication
 import me.abhishek.activitymonitoring.utils.Constatnts
 import java.util.Calendar
 
@@ -71,7 +71,7 @@ class AppStatsMonitoring(
         val appsData = hashMapOf(
             usageStats.packageName to usageStats.totalTimeInForeground,
         )
-        firestore.collection(UNIQUE_ID).document(Constatnts.MONITORING_DOCUMENT)
+        firestore.collection(ActivityMonitoringApplication.UNIQUE_ID).document(Constatnts.MONITORING_DOCUMENT)
             .collection(Constatnts.APPS_STATS_COLLECTION)
             .document(Constatnts.APPS_FOREGROUND_TIME)
             .set(appsData, SetOptions.merge())

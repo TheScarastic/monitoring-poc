@@ -9,17 +9,14 @@ import android.content.pm.PackageManager
 import android.hardware.SensorManager
 import android.location.LocationManager
 import android.net.ConnectivityManager
-import android.os.Build
 import android.os.IBinder
-import android.provider.Settings
 import android.telephony.SubscriptionManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
 import dagger.hilt.android.AndroidEntryPoint
 import me.abhishek.activitymonitoring.R
-import me.abhishek.activitymonitoring.Traffic.TrafficMonitor
+import me.abhishek.activitymonitoring.traffic.TrafficMonitor
 import me.abhishek.activitymonitoring.battery.BatteryMonitoring
 import me.abhishek.activitymonitoring.location.LocationMonitoring
 import me.abhishek.activitymonitoring.network.NetworkMonitor
@@ -78,10 +75,6 @@ class ForegroundService : Service() {
         super.onCreate()
         Log.i(TAG, "service created, location")
 
-        UNIQUE_ID = Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-
-        addDeviceToFirestore()
-
         // Sensors
         SensorsMonitoring(sensorManager, firestore)
 
@@ -108,15 +101,8 @@ class ForegroundService : Service() {
         return null
     }
 
-    private fun addDeviceToFirestore() {
-        val deviceName = Build.MODEL
-        firestore.collection(Constatnts.DEVICE_ID_DOCUMENT).document(Constatnts.DEVICE_ID_DOCUMENT)
-            .set(hashMapOf(UNIQUE_ID to deviceName), SetOptions.merge() )
-    }
-
     companion object {
         const val NOTIFICATION_ID = 99
         const val TAG = "ForegroundService"
-        lateinit var UNIQUE_ID: String
     }
 }

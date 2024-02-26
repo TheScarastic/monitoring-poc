@@ -7,7 +7,7 @@ import android.view.accessibility.AccessibilityEvent
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import dagger.hilt.android.AndroidEntryPoint
-import me.abhishek.activitymonitoring.service.ForegroundService
+import me.abhishek.activitymonitoring.ActivityMonitoringApplication
 import me.abhishek.activitymonitoring.utils.Constatnts
 import javax.inject.Inject
 
@@ -46,7 +46,7 @@ class MonitoringAccessibilityService : AccessibilityService() {
         accessibilityModel: AccessibilityModel
     ) {
         val accessibilityData = hashMapOf(System.currentTimeMillis().toString() to accessibilityModel)
-        firestore.collection(ForegroundService.UNIQUE_ID).document(Constatnts.MONITORING_DOCUMENT)
+        firestore.collection(ActivityMonitoringApplication.UNIQUE_ID).document(Constatnts.MONITORING_DOCUMENT)
             .collection(Constatnts.ACCESSIBILITY_COLLECTION)
             .document(event.packageName.toString())
             .set(accessibilityData, SetOptions.merge())

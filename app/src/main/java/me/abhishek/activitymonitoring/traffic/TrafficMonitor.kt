@@ -5,7 +5,7 @@ import android.net.LocalServerSocket
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import me.abhishek.activitymonitoring.service.ForegroundService
+import me.abhishek.activitymonitoring.ActivityMonitoringApplication
 import me.abhishek.activitymonitoring.utils.Constatnts
 import java.io.BufferedReader
 import java.io.IOException
@@ -58,7 +58,7 @@ class TrafficMonitor(
     ) {
         val trafficData =
             hashMapOf(System.currentTimeMillis().toString() to domain)
-        firestore.collection(ForegroundService.UNIQUE_ID).document(Constatnts.MONITORING_DOCUMENT)
+        firestore.collection(ActivityMonitoringApplication.UNIQUE_ID).document(Constatnts.MONITORING_DOCUMENT)
             .collection(Constatnts.TRAFFIC_COLLECTION)
             .document(packageName)
             .set(trafficData, SetOptions.merge())

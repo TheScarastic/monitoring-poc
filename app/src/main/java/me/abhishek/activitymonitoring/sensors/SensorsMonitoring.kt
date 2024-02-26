@@ -1,17 +1,13 @@
 package me.abhishek.activitymonitoring.sensors
 
-import android.content.Context
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.provider.Settings
 import android.util.Log
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
-import me.abhishek.activitymonitoring.service.ForegroundService.Companion.UNIQUE_ID
+import me.abhishek.activitymonitoring.ActivityMonitoringApplication
 import me.abhishek.activitymonitoring.utils.Constatnts
 
 class SensorsMonitoring(
@@ -78,7 +74,7 @@ class SensorsMonitoring(
             )
 
             // Update to firestore
-            firestore.collection(UNIQUE_ID).document(Constatnts.MONITORING_DOCUMENT)
+            firestore.collection(ActivityMonitoringApplication.UNIQUE_ID).document(Constatnts.MONITORING_DOCUMENT)
                 .collection(Constatnts.SENSORS_COLLECTION)
                 .document(document)
                 .set(sensorData, SetOptions.merge())

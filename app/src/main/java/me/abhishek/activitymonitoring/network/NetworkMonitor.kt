@@ -14,7 +14,7 @@ import android.telephony.SubscriptionManager
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.google.firebase.firestore.FirebaseFirestore
-import me.abhishek.activitymonitoring.service.ForegroundService
+import me.abhishek.activitymonitoring.ActivityMonitoringApplication
 import me.abhishek.activitymonitoring.utils.Constatnts
 
 @RequiresApi(Build.VERSION_CODES.S)
@@ -128,7 +128,7 @@ class NetworkMonitor(
     }
 
     private fun addNetworkStatusToFirestore(networkModel: NetworkModel) {
-        firestore.collection(ForegroundService.UNIQUE_ID).document(Constatnts.MONITORING_DOCUMENT)
+        firestore.collection(ActivityMonitoringApplication.UNIQUE_ID).document(Constatnts.MONITORING_DOCUMENT)
             .collection(Constatnts.NETWORK_COLLECTION)
             .document(System.currentTimeMillis().toString())
             .set(networkModel)
