@@ -24,7 +24,6 @@ object Constatnts {
     const val BATTERY_COLLECTION = "battery"
 
     // Location
-    const val LOCATION_EXTRA = "location_extra"
     const val LOCATION_COLLECTION = "location"
 
     // Network

@@ -11,11 +11,16 @@
     <string name="grant_location_permission">Grant</string>
     <string name="deny_location_permisiion">Deny</string>
 
-    <string name="start_service_toast">Monitoring service started, Location: %b</string>
+    <string name="start_service_toast">Monitoring service started</string>
     <string name="stop_service_toast">Monitoring service stopped</string>
 
     <string name="accessibility_service">Monitor Actions</string>
     <string name="accessibility_service_description">Monitor children action so that parents can monitor them</string>
 
     <string name="device_details">Unique ID: %s \n Device: %s</string>
+
+    <string name="dialog_stats_title">App Usage Stats</string>
+    <string name="dialog_stats_summary">Stats Permission is necessary to gather how much time the apps are used</string>
+    <string name="grant_stats_permission">Grant</string>
+    <string name="deny_stats_permisiion">Deny</string>
 </resources>

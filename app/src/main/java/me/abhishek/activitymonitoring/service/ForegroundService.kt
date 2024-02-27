@@ -14,6 +14,9 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.firestore.FirebaseFirestore
 import dagger.hilt.android.AndroidEntryPoint
+import me.abhishek.activitymonitoring.MainActivity
+import me.abhishek.activitymonitoring.MainActivity.Companion.LOCATION_RESULT_CODE_BACKGROUND
+import me.abhishek.activitymonitoring.MainActivity.Companion.PHONE_RESULT_STATE
 import me.abhishek.activitymonitoring.R
 import me.abhishek.activitymonitoring.ServiceCallback
 import me.abhishek.activitymonitoring.battery.BatteryMonitoring
@@ -22,7 +25,6 @@ import me.abhishek.activitymonitoring.network.NetworkMonitor
 import me.abhishek.activitymonitoring.sensors.SensorsMonitoring
 import me.abhishek.activitymonitoring.traffic.TrafficMonitor
 import me.abhishek.activitymonitoring.usagestats.AppStatsMonitoring
-import me.abhishek.activitymonitoring.utils.Constatnts
 import javax.inject.Inject
 
 /**
@@ -85,18 +87,25 @@ class ForegroundService : Service() {
         // Start the service in the foreground
         startForeground(NOTIFICATION_ID, notification)
 
+        val permissionFlags = intent?.getIntExtra(MainActivity.PERMISSION_EXTRA, 0) ?: 0
+        val hasLocationPermission =
+            (permissionFlags and LOCATION_RESULT_CODE_BACKGROUND) == LOCATION_RESULT_CODE_BACKGROUND
+        val hasPhoneStatePermission =
+            (permissionFlags and PHONE_RESULT_STATE) == PHONE_RESULT_STATE
+
+
         // Location Monitoring
-        if (intent != null && intent.getBooleanExtra(Constatnts.LOCATION_EXTRA, false)) {
+        if (hasLocationPermission) {
             locationMonitoring = LocationMonitoring(this, locationManager, firestore)
+        } else {
+            Log.e(TAG, "Skipping location monitoring, Permission missing")
         }
 
         // Sensors
         sensorsMonitoring = SensorsMonitoring(sensorManager, firestore)
 
         // Usage Stats
-        if (checkCallingOrSelfPermission(android.Manifest.permission.PACKAGE_USAGE_STATS)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
+        if (MainActivity.checkUsageStatsPermission(this, applicationInfo)) {
             appStatsMonitoring = AppStatsMonitoring(this, usageStatsManager, firestore)
         } else {
             Log.e(TAG, "permission missing for PACKAGE_USAGE_STATS")
@@ -106,7 +115,12 @@ class ForegroundService : Service() {
         batteryMonitoring = BatteryMonitoring(this, firestore)
 
         // Network
-        networkMonitor = NetworkMonitor(this, connectivityManager, subscriptionManager, firestore)
+        if (hasPhoneStatePermission) {
+            networkMonitor =
+                NetworkMonitor(this, connectivityManager, subscriptionManager, firestore)
+        } else {
+            Log.e(TAG, "Skipping network monitoring, Permission missing")
+        }
 
         // Traffic
         trafficMonitor = TrafficMonitor(this, firestore).apply {
